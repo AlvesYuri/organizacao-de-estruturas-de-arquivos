@@ -1,8 +1,8 @@
 /*O objetivo da tarefa é implementar o método da busca binária no arquivo de ceps ordenado.
-Você não pode trazer o arquivo inteiro para memória. Os registros serão lidos um de cada vez. 
-Posicione o indicador de posição no registro do meio do arquivo. Verifique se esse registro é o registro desejado. 
+Você não pode trazer o arquivo inteiro para memória. Os registros serão lidos um de cada vez.
+Posicione o indicador de posição no registro do meio do arquivo. Verifique se esse registro é o registro desejado.
 Caso positivo, o algoritmo termina, apresentando o registro encontrado.
-Caso o registro não seja o desejado, continue a pesquisa, considerando apenas a metade do arquivo onde o cep procurado possa estar. 
+Caso o registro não seja o desejado, continue a pesquisa, considerando apenas a metade do arquivo onde o cep procurado possa estar.
 A implementação correta publicada no GIT vale até 2 pontos.*/
 
 #include <stdio.h>
@@ -28,7 +28,6 @@ int main(int argc, char **argv)
   FILE *f;
   Endereco e;
   long tamanhoArquivo, tamanhoRegistro, qtdRegistros, posicao, primeiro, ultimo, meio;
-
   f = fopen("cep_ordenado.dat", "rb");
   fseek(f, 0, SEEK_END);
   tamanhoArquivo = ftell(f);
@@ -39,24 +38,25 @@ int main(int argc, char **argv)
 
   printf("Tamanho do Arquivo: %ld\n", tamanhoArquivo);
   printf("Tamanho do Registro: %ld\n", tamanhoRegistro);
-  printf("Quantidade de Registros: %ld\n", qtdRegistros); 
+  printf("Quantidade de Registros: %ld\n", qtdRegistros);
   printf("Ultimo registro: %ld\n", ultimo);
 
   while (primeiro <= ultimo)
   {
-    
+
     meio = (primeiro + ultimo) / 2;
 
     fseek(f, meio * tamanhoRegistro, SEEK_SET);
     fread(&e, tamanhoRegistro, 1, f);
 
-    if (argv[1] == e.cep)
+    if (strncmp(argv[1], e.cep, 8) == 0)
     {
-      printf("ACHOU");
+      printf("ACHOU: %s\n", e.cep);
+      break;
     }
     else
     {
-      if (argv[1] < e.cep)
+      if (strncmp(argv[1], e.cep, 8) < 0)
       {
         ultimo = meio - 1;
       }
@@ -65,6 +65,11 @@ int main(int argc, char **argv)
         primeiro = meio + 1;
       }
     }
+  }
+
+  if (primeiro > ultimo)
+  {
+    printf("CEP NAO ENCONTRADO");
   }
 
   fclose(f);
